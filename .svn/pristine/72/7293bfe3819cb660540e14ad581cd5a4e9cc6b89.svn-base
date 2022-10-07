@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="board.dao.BoardDao">
+
+	<select id="boardList" resultType="board" parameterType="board">
+		 select * 
+		 from board 
+		 WHERE 1=1
+		 <if test="subject!=null">
+		 AND subject LIKE '%'||#{subject}||'%'
+		 </if>
+		 <if test="writer!=null">
+		 AND writer LIKE '%'||#{writer}||'%'
+		 </if>
+		 order by regdte desc		
+	</select>
+	<insert id="insertBoard" parameterType="board">
+		insert into board values(board_seq.nextval,0,#{subject},
+			#{content}, #{writer},0, sysdate, sysdate)		
+	</insert>
+	<select id="getBoardDetail" parameterType="int" resultType="board">
+		select * from board where no = #{no}
+	</select>
+	<update id="readCountup" parameterType="int">
+		update board
+		set readcnt = readcnt+1
+		where no = #{no}	
+	</update>	
+	<update id="updateBoard" parameterType="board">
+		UPDATE board
+		   SET subject = #{subject},
+			   content = #{content},
+			   uptdte = sysdate
+		WHERE NO = #{no}	
+	</update>
+	<delete id="deleteBoard" parameterType="int">
+		delete
+		from board
+		where no = #{no}	
+	</delete>	
+	<insert id="insertFile" parameterType="boardfile">
+		insert into  boardfile values(board_seq.currval,
+		#{path}, #{fname}, sysdate, sysdate, '')
+	</insert>		
+</mapper>
